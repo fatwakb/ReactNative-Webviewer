@@ -41,7 +41,7 @@ export default function WebViewScreen() {
   // Fungsi ketika halaman sudah dimuat
   const handleWebViewLoad = useCallback(async () => {
     // Tambahkan sedikit delay agar splash terlihat (opsional)
-    await new Promise(resolve => setTimeout(resolve, 800));
+    await new Promise(resolve => setTimeout(resolve, 1500));
     await SplashScreen.hideAsync();
   }, []);
 
