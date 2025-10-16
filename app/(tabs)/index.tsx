@@ -1,9 +1,12 @@
 import * as NavigationBar from 'expo-navigation-bar';
 import * as ScreenOrientation from 'expo-screen-orientation';
+import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, BackHandler, Button, KeyboardAvoidingView, Platform, StyleSheet, Text, View } from 'react-native';
 import { WebView } from 'react-native-webview';
+
+SplashScreen.preventAutoHideAsync();
 
 export default function WebViewScreen() {
   const webViewRef = useRef<WebView>(null);
@@ -35,6 +38,13 @@ export default function WebViewScreen() {
     return () => backHandler.remove();
   }, [canGoBack]);
 
+  // Fungsi ketika halaman sudah dimuat
+  const handleWebViewLoad = useCallback(async () => {
+    // Tambahkan sedikit delay agar splash terlihat (opsional)
+    await new Promise(resolve => setTimeout(resolve, 800));
+    await SplashScreen.hideAsync();
+  }, []);
+
   const reloadWebView = () => {
     setHasError(false);
     webViewRef.current?.reload();
@@ -55,6 +65,7 @@ export default function WebViewScreen() {
             onNavigationStateChange={(navState) => setCanGoBack(navState.canGoBack)}
             onError={() => setHasError(true)}
             style={styles.webview}
+            onLoadEnd={handleWebViewLoad}
           />
         ) : (
           <View style={styles.errorContainer}>
